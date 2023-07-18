@@ -11,15 +11,24 @@ import java.util.stream.Collectors;
 public class EmployeeController {
 
     public final List<Employee> employees = new ArrayList<>();
+    private final EmployeeRepository employeeRepository;
+
+    public EmployeeController(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
+    }
+
+    public List<Employee> getEmployees() {
+        return employees;
+    }
 
     @GetMapping
     public List<Employee> getAllEmployees() {
-        return employees;
+        return getEmployees();
     }
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable Long id) {
-        return employees.stream()
+        return getEmployees().stream()
                 .filter(employee -> employee.getId().equals(id))
                 .findFirst()
                 .orElse(null);
@@ -27,7 +36,7 @@ public class EmployeeController {
 
     @GetMapping(params = "gender")
     public List<Employee> getEmployeesByGender(@RequestParam String gender) {
-        return employees.stream()
+        return getEmployees().stream()
                 .filter(employee -> employee.getGender().equals(gender))
                 .collect(Collectors.toList());
     }
@@ -35,11 +44,11 @@ public class EmployeeController {
     @PostMapping
     public void createEmployee(@RequestBody Employee employee) {
         employee.setId(nextId());
-        employees.add(employee);
+        getEmployees().add(employee);
     }
 
     private Long nextId() {
-        long maxId = employees.stream()
+        long maxId = getEmployees().stream()
                 .mapToLong(Employee::getId)
                 .max()
                 .orElse(0L);
