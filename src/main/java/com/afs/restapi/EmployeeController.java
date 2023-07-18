@@ -12,10 +12,6 @@ public class EmployeeController {
 
     public final List<Employee> employees = new ArrayList<>();
 
-    public EmployeeController() {
-        employees.add(new Employee(1L, "zhangsan", 20, "Male", 1000));
-    }
-
     @GetMapping
     public List<Employee> getAllEmployees() {
         return employees;
