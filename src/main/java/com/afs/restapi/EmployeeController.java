@@ -10,16 +10,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    public static final List<Employee> EMPLOYEES = List.of(new Employee(1L, "zhangsan", 20, "Male", 1000));
+    public final List<Employee> employees = new ArrayList<>();
+
+    public EmployeeController() {
+        employees.add(new Employee(1L, "zhangsan", 20, "Male", 1000));
+    }
 
     @GetMapping
     public List<Employee> getAllEmployees() {
-        return EMPLOYEES;
+        return employees;
     }
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable Long id) {
-        return EMPLOYEES.stream()
+        return employees.stream()
                 .filter(employee -> employee.getId().equals(id))
                 .findFirst()
                 .orElse(null);
@@ -27,8 +31,23 @@ public class EmployeeController {
 
     @GetMapping(params = "gender")
     public List<Employee> getEmployeesByGender(@RequestParam String gender) {
-        return EMPLOYEES.stream()
+        return employees.stream()
                 .filter(employee -> employee.getGender().equals(gender))
                 .collect(Collectors.toList());
     }
+
+    @PostMapping
+    public void createEmployee(@RequestBody Employee employee) {
+        employee.setId(nextId());
+        employees.add(employee);
+    }
+
+    private Long nextId() {
+        long maxId = employees.stream()
+                .mapToLong(Employee::getId)
+                .max()
+                .orElse(0L);
+        return maxId + 1;
+    }
+
 }
