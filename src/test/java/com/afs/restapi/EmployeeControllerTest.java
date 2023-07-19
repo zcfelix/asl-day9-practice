@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 @SpringBootTest
@@ -45,4 +46,26 @@ class EmployeeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(previousEmployee.getGender()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(employeeUpdateRequest.getSalary()));
     }
+
+    @Test
+    void should_create_employee() throws Exception {
+        Employee employee = new Employee();
+        employee.setName("zhangsan");
+        employee.setAge(22);
+        employee.setGender("Male");
+        employee.setSalary(10000);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String employeeRequest = objectMapper.writeValueAsString(employee);
+        mockMvc.perform(post("/employees")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(employeeRequest))
+                .andExpect(MockMvcResultMatchers.status().is(201))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(employee.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(employee.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(employee.getGender()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(employee.getSalary()));
+    }
+
 }
