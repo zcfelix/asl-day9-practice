@@ -11,8 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -49,11 +48,7 @@ class EmployeeControllerTest {
 
     @Test
     void should_create_employee() throws Exception {
-        Employee employee = new Employee();
-        employee.setName("zhangsan");
-        employee.setAge(22);
-        employee.setGender("Male");
-        employee.setSalary(10000);
+        Employee employee = getEmployee();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeRequest = objectMapper.writeValueAsString(employee);
@@ -68,4 +63,27 @@ class EmployeeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(employee.getSalary()));
     }
 
+    @Test
+    void should_find_employees() throws Exception {
+        Employee employee = getEmployee();
+        employeeRepository.insert(employee);
+
+        mockMvc.perform(get("/employees"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(employee.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(employee.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value(employee.getGender()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(employee.getSalary()));
+    }
+
+    private static Employee getEmployee() {
+        Employee employee = new Employee();
+        employee.setName("zhangsan");
+        employee.setAge(22);
+        employee.setGender("Male");
+        employee.setSalary(10000);
+        return employee;
+    }
 }
