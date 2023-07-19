@@ -9,52 +9,42 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    private final EmployeeRepository employeeRepository;
+    private final EmployeeService employeeService;
 
-    public EmployeeController(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
-
-    public List<Employee> getEmployees() {
-        return employeeRepository.getEmployees();
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
     }
 
     @GetMapping
     public List<Employee> getAllEmployees() {
-        return employeeRepository.getEmployees();
+        return employeeService.findAll();
     }
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable Long id) {
-        return employeeRepository.findById(id);
+        return employeeService.findById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        Employee toBeUpdatedEmployee = employeeRepository.findById(id);
-        if (employee.getSalary() != null) {
-            toBeUpdatedEmployee.setSalary(employee.getSalary());
-        }
-        if (employee.getAge() != null) {
-            toBeUpdatedEmployee.setAge(employee.getAge());
-        }
+        employeeService.update(id, employee);
     }
 
     @GetMapping(params = "gender")
     public List<Employee> getEmployeesByGender(@RequestParam String gender) {
-        return employeeRepository.findAllByGender(gender);
+        return employeeService.findAllByGender(gender);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeRepository.insert(employee);
+        return employeeService.create(employee);
     }
 
     @GetMapping(params = {"page", "size"})
     public List<Employee> findEmployeesByPage(@RequestParam Integer page, @RequestParam Integer size) {
-        return employeeRepository.findByPage(page, size);
+        return employeeService.findByPage(page, size);
     }
 
 }
