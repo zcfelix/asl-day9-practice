@@ -9,48 +9,42 @@ import java.util.List;
 @RestController
 public class CompanyController {
 
-    private CompanyRepository companyRepository;
-    private EmployeeRepository employeeRepository;
+    private CompanyService companyService;
 
-    public CompanyController(CompanyRepository companyRepository, EmployeeRepository employeeRepository) {
-        this.companyRepository = companyRepository;
-        this.employeeRepository = employeeRepository;
+    public CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
     }
 
     @GetMapping
     public List<Company> getAllCompanies() {
-        return companyRepository.getCompanies();
+        return companyService.findAll();
     }
 
     @GetMapping(params = {"page", "size"})
     public List<Company> getCompaniesByPage(@RequestParam Integer page, @RequestParam Integer size) {
-        return companyRepository.findByPage(page, size);
+        return companyService.findByPage(page, size);
     }
 
     @GetMapping("/{id}")
     public Company getCompanyById(@PathVariable Long id) {
-        Company company = companyRepository.findById(id);
-        List<Employee> employees = employeeRepository.findByCompanyId(company.getId());
-        company.setEmployees(employees);
-        return company;
+        return companyService.findById(id);
     }
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateCompany(@PathVariable Long id, @RequestBody Company company) {
-        Company byId = companyRepository.findById(id);
-        byId.setName(company.getName());
+        companyService.update(id, company, this);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Company createCompany(@RequestBody Company company) {
-        return companyRepository.insert(company);
+        return companyService.create(company, this);
     }
 
     @GetMapping("/{id}/employees")
     public List<Employee> getEmployeesByCompanyId(@PathVariable Long id) {
-        return employeeRepository.findByCompanyId(id);
+        return companyService.findEmployeesByCompanyId(id);
     }
 
 }
