@@ -1,6 +1,7 @@
 package com.afs.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +39,14 @@ class EmployeeControllerTest {
         mockMvc.perform(put("/employees/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedEmployeeJson))
-                .andExpect(MockMvcResultMatchers.status().is(204))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(previousEmployee.getName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(employeeUpdateRequest.getAge()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(previousEmployee.getGender()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(employeeUpdateRequest.getSalary()));
+                .andExpect(MockMvcResultMatchers.status().is(204));
+
+        Employee updatedEmployee = employeeRepository.findById(1L);
+        Assertions.assertEquals(employeeUpdateRequest.getAge(), updatedEmployee.getAge());
+        Assertions.assertEquals(employeeUpdateRequest.getSalary(), updatedEmployee.getSalary());
+        Assertions.assertEquals(previousEmployee.getId(), updatedEmployee.getId());
+        Assertions.assertEquals(previousEmployee.getName(), updatedEmployee.getName());
+        Assertions.assertEquals(previousEmployee.getGender(), updatedEmployee.getGender());
     }
 
     @Test

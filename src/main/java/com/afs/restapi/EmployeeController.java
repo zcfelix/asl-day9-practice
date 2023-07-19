@@ -31,7 +31,7 @@ public class EmployeeController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
+    public void updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
         Employee toBeUpdatedEmployee = employeeRepository.findById(id);
         if (employee.getSalary() != null) {
             toBeUpdatedEmployee.setSalary(employee.getSalary());
@@ -39,7 +39,6 @@ public class EmployeeController {
         if (employee.getAge() != null) {
             toBeUpdatedEmployee.setAge(employee.getAge());
         }
-        return toBeUpdatedEmployee;
     }
 
     @GetMapping(params = "gender")
