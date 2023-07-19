@@ -78,6 +78,21 @@ class EmployeeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(employee.getSalary()));
     }
 
+    @Test
+    void should_find_employee_by_id() throws Exception {
+        Employee employee = getEmployee();
+        employeeRepository.insert(employee);
+
+        mockMvc.perform(get("/employees/{id}", 1))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(employee.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(employee.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(employee.getGender()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(employee.getSalary()));
+    }
+
+
     private static Employee getEmployee() {
         Employee employee = new Employee();
         employee.setName("zhangsan");
