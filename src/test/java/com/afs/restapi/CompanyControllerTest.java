@@ -81,23 +81,26 @@ class CompanyControllerTest {
     void should_find_company_by_id() throws Exception {
         Company company = getCompany();
         companyRepository.insert(company);
+        Employee employee = getEmployee(company);
+        employeeRepository.insert(employee);
 
         mockMvc.perform(get("/companies/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1L))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(company.getName()));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value(company.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees.length()").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].name").value(employee.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].age").value(employee.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].gender").value(employee.getGender()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employees[0].salary").value(employee.getSalary()));
     }
 
     @Test
     void should_find_employees_by_companies() throws Exception {
         Company company = getCompany();
         companyRepository.insert(company);
-        Employee employee = new Employee();
-        employee.setName("zhangsan");
-        employee.setAge(22);
-        employee.setGender("Male");
-        employee.setSalary(10000);
-        employee.setCompanyId(company.getId());
+        Employee employee = getEmployee(company);
         employeeRepository.insert(employee);
 
         mockMvc.perform(get("/companies/{companyId}/employees", 1L))
@@ -108,6 +111,16 @@ class CompanyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(employee.getAge()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value(employee.getGender()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(employee.getSalary()));
+    }
+
+    private static Employee getEmployee(Company company) {
+        Employee employee = new Employee();
+        employee.setName("zhangsan");
+        employee.setAge(22);
+        employee.setGender("Male");
+        employee.setSalary(10000);
+        employee.setCompanyId(company.getId());
+        return employee;
     }
 
 

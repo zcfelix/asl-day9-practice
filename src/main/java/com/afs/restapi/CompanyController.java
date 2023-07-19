@@ -24,7 +24,10 @@ public class CompanyController {
 
     @GetMapping("/{id}")
     public Company getCompanyById(@PathVariable Long id) {
-        return companyRepository.findById(id);
+        Company company = companyRepository.findById(id);
+        List<Employee> employees = employeeRepository.findByCompanyId(company.getId());
+        company.setEmployees(employees);
+        return company;
     }
 
     @PutMapping("/{id}")
