@@ -52,4 +52,9 @@ public class EmployeeController {
         return employeeRepository.insert(employee);
     }
 
+    @GetMapping(params = {"page", "size"})
+    public List<Employee> findEmployeesByPage(@RequestParam Integer page, @RequestParam Integer size) {
+        return employeeRepository.findByPage(page, size);
+    }
+
 }

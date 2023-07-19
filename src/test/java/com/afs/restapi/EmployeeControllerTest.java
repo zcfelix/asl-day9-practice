@@ -51,7 +51,7 @@ class EmployeeControllerTest {
 
     @Test
     void should_create_employee() throws Exception {
-        Employee employee = getEmployee();
+        Employee employee = getEmployeeZhangsan();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String employeeRequest = objectMapper.writeValueAsString(employee);
@@ -68,7 +68,7 @@ class EmployeeControllerTest {
 
     @Test
     void should_find_employees() throws Exception {
-        Employee employee = getEmployee();
+        Employee employee = getEmployeeZhangsan();
         employeeRepository.insert(employee);
 
         mockMvc.perform(get("/employees"))
@@ -83,7 +83,7 @@ class EmployeeControllerTest {
 
     @Test
     void should_find_employee_by_id() throws Exception {
-        Employee employee = getEmployee();
+        Employee employee = getEmployeeZhangsan();
         employeeRepository.insert(employee);
 
         mockMvc.perform(get("/employees/{id}", 1))
@@ -97,7 +97,7 @@ class EmployeeControllerTest {
 
     @Test
     void should_find_employee_by_gender() throws Exception {
-        Employee employee = getEmployee();
+        Employee employee = getEmployeeZhangsan();
         employeeRepository.insert(employee);
 
         mockMvc.perform(get("/employees?gender={0}", "Male"))
@@ -110,13 +110,56 @@ class EmployeeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(employee.getSalary()));
     }
 
+    @Test
+    void should_find_employees_by_page() throws Exception {
+        Employee employeeZhangsan = getEmployeeZhangsan();
+        Employee employeeSusan = getEmployeeSusan();
+        Employee employeeLisi = getEmployeeLisi();
+        employeeRepository.insert(employeeZhangsan);
+        employeeRepository.insert(employeeSusan);
+        employeeRepository.insert(employeeLisi);
 
-    private static Employee getEmployee() {
+        mockMvc.perform(get("/employees")
+                        .param("page", "1")
+                        .param("size", "2"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(employeeZhangsan.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(employeeZhangsan.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value(employeeZhangsan.getGender()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(employeeZhangsan.getSalary()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(employeeSusan.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(employeeSusan.getAge()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].gender").value(employeeSusan.getGender()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].salary").value(employeeSusan.getSalary()));
+    }
+
+    private static Employee getEmployeeZhangsan() {
         Employee employee = new Employee();
         employee.setName("zhangsan");
         employee.setAge(22);
         employee.setGender("Male");
         employee.setSalary(10000);
+        return employee;
+    }
+
+    private static Employee getEmployeeSusan() {
+        Employee employee = new Employee();
+        employee.setName("susan");
+        employee.setAge(23);
+        employee.setGender("Male");
+        employee.setSalary(11000);
+        return employee;
+    }
+
+    private static Employee getEmployeeLisi() {
+        Employee employee = new Employee();
+        employee.setName("lisi");
+        employee.setAge(24);
+        employee.setGender("Female");
+        employee.setSalary(12000);
         return employee;
     }
 }
