@@ -46,4 +46,9 @@ public class EmployeeRepository {
         return maxId + 1;
     }
 
+    public List<Employee> findByCompanyId(Long companyId) {
+        return employees.stream()
+                .filter(employee -> employee.getCompanyId().equals(companyId))
+                .collect(Collectors.toList());
+    }
 }

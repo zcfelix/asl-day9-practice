@@ -7,6 +7,7 @@ public class Employee {
     private Integer age;
     private String gender;
     private Integer salary;
+    private Long companyId;
 
     public Employee() {
     }
@@ -57,5 +58,13 @@ public class Employee {
 
     public Integer getSalary() {
         return salary;
+    }
+
+    public Long getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
     }
 }
