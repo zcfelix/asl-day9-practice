@@ -2,9 +2,9 @@ package com.afs.restapi.service;
 
 import com.afs.restapi.entity.Company;
 import com.afs.restapi.exception.CompanyNotFoundException;
-import com.afs.restapi.repository.CompanyRepository;
+import com.afs.restapi.repository.InMemoryCompanyRepository;
 import com.afs.restapi.entity.Employee;
-import com.afs.restapi.repository.EmployeeRepository;
+import com.afs.restapi.repository.InMemoryEmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,20 +13,20 @@ import java.util.Optional;
 @Service
 public class CompanyService {
 
-    private final CompanyRepository companyRepository;
-    private final EmployeeRepository employeeRepository;
+    private final InMemoryCompanyRepository inMemoryCompanyRepository;
+    private final InMemoryEmployeeRepository inMemoryEmployeeRepository;
 
-    public CompanyService(CompanyRepository companyRepository, EmployeeRepository employeeRepository) {
-        this.companyRepository = companyRepository;
-        this.employeeRepository = employeeRepository;
+    public CompanyService(InMemoryCompanyRepository inMemoryCompanyRepository, InMemoryEmployeeRepository inMemoryEmployeeRepository) {
+        this.inMemoryCompanyRepository = inMemoryCompanyRepository;
+        this.inMemoryEmployeeRepository = inMemoryEmployeeRepository;
     }
 
-    public CompanyRepository getCompanyRepository() {
-        return companyRepository;
+    public InMemoryCompanyRepository getCompanyRepository() {
+        return inMemoryCompanyRepository;
     }
 
-    public EmployeeRepository getEmployeeRepository() {
-        return employeeRepository;
+    public InMemoryEmployeeRepository getEmployeeRepository() {
+        return inMemoryEmployeeRepository;
     }
 
     public List<Company> findAll() {
@@ -58,6 +58,6 @@ public class CompanyService {
     }
 
     public void delete(Long id) {
-        companyRepository.deleteById(id);
+        inMemoryCompanyRepository.deleteById(id);
     }
 }

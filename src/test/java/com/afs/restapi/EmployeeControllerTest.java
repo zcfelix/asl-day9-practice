@@ -1,7 +1,7 @@
 package com.afs.restapi;
 
 import com.afs.restapi.entity.Employee;
-import com.afs.restapi.repository.EmployeeRepository;
+import com.afs.restapi.repository.InMemoryEmployeeRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,17 +27,17 @@ class EmployeeControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private EmployeeRepository employeeRepository;
+    private InMemoryEmployeeRepository inMemoryEmployeeRepository;
 
     @BeforeEach
     void setUp() {
-        employeeRepository.clearAll();
+        inMemoryEmployeeRepository.clearAll();
     }
 
     @Test
     void should_update_employee_age_and_salary() throws Exception {
         Employee previousEmployee = new Employee(1L, "zhangsan", 22, "Male", 1000);
-        employeeRepository.insert(previousEmployee);
+        inMemoryEmployeeRepository.insert(previousEmployee);
 
         Employee employeeUpdateRequest = new Employee(1L, "lisi", 24, "Female", 2000);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -47,7 +47,7 @@ class EmployeeControllerTest {
                         .content(updatedEmployeeJson))
                 .andExpect(MockMvcResultMatchers.status().is(204));
 
-        Optional<Employee> optionalEmployee = employeeRepository.findById(1L);
+        Optional<Employee> optionalEmployee = inMemoryEmployeeRepository.findById(1L);
         assertTrue(optionalEmployee.isPresent());
         Employee updatedEmployee = optionalEmployee.get();
         Assertions.assertEquals(employeeUpdateRequest.getAge(), updatedEmployee.getAge());
@@ -77,7 +77,7 @@ class EmployeeControllerTest {
     @Test
     void should_find_employees() throws Exception {
         Employee employee = getEmployeeZhangsan();
-        employeeRepository.insert(employee);
+        inMemoryEmployeeRepository.insert(employee);
 
         mockMvc.perform(get("/employees"))
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -92,7 +92,7 @@ class EmployeeControllerTest {
     @Test
     void should_find_employee_by_id() throws Exception {
         Employee employee = getEmployeeZhangsan();
-        employeeRepository.insert(employee);
+        inMemoryEmployeeRepository.insert(employee);
 
         mockMvc.perform(get("/employees/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -106,18 +106,18 @@ class EmployeeControllerTest {
     @Test
     void should_delete_employee_by_id() throws Exception {
         Employee employee = getEmployeeZhangsan();
-        employeeRepository.insert(employee);
+        inMemoryEmployeeRepository.insert(employee);
 
         mockMvc.perform(delete("/employees/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(204));
 
-        assertTrue(employeeRepository.findById(1L).isEmpty());
+        assertTrue(inMemoryEmployeeRepository.findById(1L).isEmpty());
     }
 
     @Test
     void should_find_employee_by_gender() throws Exception {
         Employee employee = getEmployeeZhangsan();
-        employeeRepository.insert(employee);
+        inMemoryEmployeeRepository.insert(employee);
 
         mockMvc.perform(get("/employees?gender={0}", "Male"))
                 .andExpect(MockMvcResultMatchers.status().is(200))
@@ -134,9 +134,9 @@ class EmployeeControllerTest {
         Employee employeeZhangsan = getEmployeeZhangsan();
         Employee employeeSusan = getEmployeeSusan();
         Employee employeeLisi = getEmployeeLisi();
-        employeeRepository.insert(employeeZhangsan);
-        employeeRepository.insert(employeeSusan);
-        employeeRepository.insert(employeeLisi);
+        inMemoryEmployeeRepository.insert(employeeZhangsan);
+        inMemoryEmployeeRepository.insert(employeeSusan);
+        inMemoryEmployeeRepository.insert(employeeLisi);
 
         mockMvc.perform(get("/employees")
                         .param("page", "1")
