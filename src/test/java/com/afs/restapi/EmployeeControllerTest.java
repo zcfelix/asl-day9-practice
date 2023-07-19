@@ -13,7 +13,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -44,7 +47,9 @@ class EmployeeControllerTest {
                         .content(updatedEmployeeJson))
                 .andExpect(MockMvcResultMatchers.status().is(204));
 
-        Employee updatedEmployee = employeeRepository.findById(1L);
+        Optional<Employee> optionalEmployee = employeeRepository.findById(1L);
+        assertTrue(optionalEmployee.isPresent());
+        Employee updatedEmployee = optionalEmployee.get();
         Assertions.assertEquals(employeeUpdateRequest.getAge(), updatedEmployee.getAge());
         Assertions.assertEquals(employeeUpdateRequest.getSalary(), updatedEmployee.getSalary());
         Assertions.assertEquals(previousEmployee.getId(), updatedEmployee.getId());
@@ -106,8 +111,7 @@ class EmployeeControllerTest {
         mockMvc.perform(delete("/employees/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(204));
 
-        Employee notExistedEmployee = employeeRepository.findById(1L);
-        assertNull(notExistedEmployee);
+        assertTrue(employeeRepository.findById(1L).isEmpty());
     }
 
     @Test

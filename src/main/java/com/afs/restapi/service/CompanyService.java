@@ -1,12 +1,14 @@
 package com.afs.restapi.service;
 
 import com.afs.restapi.entity.Company;
+import com.afs.restapi.exception.CompanyNotFoundException;
 import com.afs.restapi.repository.CompanyRepository;
 import com.afs.restapi.entity.Employee;
 import com.afs.restapi.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyService {
@@ -36,15 +38,15 @@ public class CompanyService {
     }
 
     public Company findById(Long id) {
-        Company company = getCompanyRepository().findById(id);
+        Company company = getCompanyRepository().findById(id).orElseThrow(CompanyNotFoundException::new);
         List<Employee> employees = getEmployeeRepository().findByCompanyId(company.getId());
         company.setEmployees(employees);
         return company;
     }
 
     public void update(Long id, Company company) {
-        Company byId = getCompanyRepository().findById(id);
-        byId.setName(company.getName());
+        Optional<Company> optionalCompany = getCompanyRepository().findById(id);
+        optionalCompany.ifPresent(previousCompany -> previousCompany.setName(company.getName()));
     }
 
     public Company create(Company company) {

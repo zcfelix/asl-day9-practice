@@ -1,6 +1,7 @@
 package com.afs.restapi.service;
 
 import com.afs.restapi.entity.Employee;
+import com.afs.restapi.exception.EmployeeNotFoundException;
 import com.afs.restapi.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,8 @@ public class EmployeeService {
     }
 
     public Employee findById(Long id) {
-        return getEmployeeRepository().findById(id);
+        return getEmployeeRepository().findById(id)
+                .orElseThrow(EmployeeNotFoundException::new);
     }
 
     public void update(Long id, Employee employee) {

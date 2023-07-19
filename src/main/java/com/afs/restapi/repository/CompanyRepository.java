@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -16,11 +17,10 @@ public class CompanyRepository {
         return companies;
     }
 
-    public Company findById(Long id) {
+    public Optional<Company> findById(Long id) {
         return getCompanies().stream()
                 .filter(company -> company.getId().equals(id))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
     public Company insert(Company company) {
@@ -49,9 +49,6 @@ public class CompanyRepository {
     }
 
     public void deleteById(Long id) {
-        Company company = findById(id);
-        if (company != null) {
-            companies.remove(company);
-        }
+        findById(id).ifPresent(company -> companies.remove(company));
     }
 }

@@ -15,7 +15,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -50,7 +53,9 @@ class CompanyControllerTest {
                         .content(updatedEmployeeJson))
                 .andExpect(MockMvcResultMatchers.status().is(204));
 
-        Company updatedCompany = companyRepository.findById(1L);
+        Optional<Company> optionalCompany = companyRepository.findById(1L);
+        assertTrue(optionalCompany.isPresent());
+        Company updatedCompany = optionalCompany.get();
         Assertions.assertEquals(previousCompany.getId(), updatedCompany.getId());
         Assertions.assertEquals(companyUpdateRequest.getName(), updatedCompany.getName());
     }
@@ -63,8 +68,7 @@ class CompanyControllerTest {
         mockMvc.perform(delete("/companies/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().is(204));
 
-        Company notExistedCompany = companyRepository.findById(1L);
-        assertNull(notExistedCompany);
+        assertTrue(companyRepository.findById(1L).isEmpty());
     }
 
     @Test
