@@ -34,6 +34,10 @@ public class EmployeeRepository {
         return employee;
     }
 
+    public void clearAll() {
+        employees.clear();
+    }
+
     private Long nextId() {
         long maxId = getEmployees().stream()
                 .mapToLong(Employee::getId)
@@ -42,11 +46,4 @@ public class EmployeeRepository {
         return maxId + 1;
     }
 
-    public void clearAll() {
-        employees.clear();
-    }
-
-    public Employee update(Employee employee) {
-        return null;
-    }
 }
