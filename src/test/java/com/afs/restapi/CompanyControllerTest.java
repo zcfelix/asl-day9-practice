@@ -1,9 +1,7 @@
 package com.afs.restapi;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +29,7 @@ class CompanyControllerTest {
     @BeforeEach
     void setUp() {
         companyRepository.clearAll();
+        employeeRepository.clearAll();
     }
 
     @Test
@@ -53,7 +52,7 @@ class CompanyControllerTest {
 
     @Test
     void should_create_employee() throws Exception {
-        Company company = getCompany();
+        Company company = getCompany1();
 
         ObjectMapper objectMapper = new ObjectMapper();
         String companyRequest = objectMapper.writeValueAsString(company);
@@ -67,7 +66,7 @@ class CompanyControllerTest {
 
     @Test
     void should_find_companies() throws Exception {
-        Company company = getCompany();
+        Company company = getCompany1();
         companyRepository.insert(company);
 
         mockMvc.perform(get("/companies"))
@@ -78,8 +77,29 @@ class CompanyControllerTest {
     }
 
     @Test
+    void should_find_companies_by_page() throws Exception {
+        Company company1 = getCompany1();
+        Company company2 = getCompany2();
+        Company company3 = getCompany3();
+        companyRepository.insert(company1);
+        companyRepository.insert(company2);
+        companyRepository.insert(company3);
+
+        mockMvc.perform(get("/companies")
+                        .param("page", "1")
+                        .param("size", "2"))
+                .andExpect(MockMvcResultMatchers.status().is(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value(company1.getName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2L))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value(company2.getName()))
+        ;
+    }
+
+    @Test
     void should_find_company_by_id() throws Exception {
-        Company company = getCompany();
+        Company company = getCompany1();
         companyRepository.insert(company);
         Employee employee = getEmployee(company);
         employeeRepository.insert(employee);
@@ -98,7 +118,7 @@ class CompanyControllerTest {
 
     @Test
     void should_find_employees_by_companies() throws Exception {
-        Company company = getCompany();
+        Company company = getCompany1();
         companyRepository.insert(company);
         Employee employee = getEmployee(company);
         employeeRepository.insert(employee);
@@ -124,9 +144,21 @@ class CompanyControllerTest {
     }
 
 
-    private static Company getCompany() {
+    private static Company getCompany1() {
         Company company = new Company();
         company.setName("ABC");
+        return company;
+    }
+
+    private static Company getCompany2() {
+        Company company = new Company();
+        company.setName("DEF");
+        return company;
+    }
+
+    private static Company getCompany3() {
+        Company company = new Company();
+        company.setName("XYZ");
         return company;
     }
 }
