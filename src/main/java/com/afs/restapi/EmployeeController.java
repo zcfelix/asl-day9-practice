@@ -31,6 +31,12 @@ public class EmployeeController {
         employeeService.update(id, employee);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteEmployee(@PathVariable Long id) {
+        employeeService.delete(id);
+    }
+
     @GetMapping(params = "gender")
     public List<Employee> getEmployeesByGender(@RequestParam String gender) {
         return employeeService.findAllByGender(gender);

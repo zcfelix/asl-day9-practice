@@ -38,16 +38,20 @@ public class CompanyService {
         return company;
     }
 
-    public void update(Long id, Company company, CompanyController companyController) {
+    public void update(Long id, Company company) {
         Company byId = getCompanyRepository().findById(id);
         byId.setName(company.getName());
     }
 
-    public Company create(Company company, CompanyController companyController) {
+    public Company create(Company company) {
         return getCompanyRepository().insert(company);
     }
 
     public List<Employee> findEmployeesByCompanyId(Long id) {
         return getEmployeeRepository().findByCompanyId(id);
+    }
+
+    public void delete(Long id) {
+        companyRepository.deleteById(id);
     }
 }

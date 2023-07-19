@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -93,6 +94,18 @@ class EmployeeControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(employee.getAge()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value(employee.getGender()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(employee.getSalary()));
+    }
+
+    @Test
+    void should_delete_employee_by_id() throws Exception {
+        Employee employee = getEmployeeZhangsan();
+        employeeRepository.insert(employee);
+
+        mockMvc.perform(delete("/employees/{id}", 1))
+                .andExpect(MockMvcResultMatchers.status().is(204));
+
+        Employee notExistedEmployee = employeeRepository.findById(1L);
+        assertNull(notExistedEmployee);
     }
 
     @Test

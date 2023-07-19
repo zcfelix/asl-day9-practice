@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -48,6 +49,18 @@ class CompanyControllerTest {
         Company updatedCompany = companyRepository.findById(1L);
         Assertions.assertEquals(previousCompany.getId(), updatedCompany.getId());
         Assertions.assertEquals(companyUpdateRequest.getName(), updatedCompany.getName());
+    }
+
+    @Test
+    void should_delete_company_name() throws Exception {
+        Company company = new Company(1L, "abc");
+        companyRepository.insert(company);
+
+        mockMvc.perform(delete("/companies/{id}", 1))
+                .andExpect(MockMvcResultMatchers.status().is(204));
+
+        Company notExistedCompany = companyRepository.findById(1L);
+        assertNull(notExistedCompany);
     }
 
     @Test

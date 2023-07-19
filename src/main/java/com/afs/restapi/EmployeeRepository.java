@@ -58,4 +58,11 @@ public class EmployeeRepository {
                 .limit(size)
                 .collect(Collectors.toList());
     }
+
+    public void deleteById(Long id) {
+        Employee employee = findById(id);
+        if (employee != null) {
+            employees.remove(employee);
+        }
+    }
 }

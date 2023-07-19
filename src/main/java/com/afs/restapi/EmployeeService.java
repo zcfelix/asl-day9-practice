@@ -46,4 +46,8 @@ public class EmployeeService {
     public List<Employee> findByPage(Integer page, Integer size) {
         return getEmployeeRepository().findByPage(page, size);
     }
+
+    public void delete(Long id) {
+        employeeRepository.deleteById(id);
+    }
 }

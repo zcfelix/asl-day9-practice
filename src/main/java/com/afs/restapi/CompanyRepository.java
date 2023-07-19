@@ -46,4 +46,11 @@ public class CompanyRepository {
                 .orElse(0L);
         return maxId + 1;
     }
+
+    public void deleteById(Long id) {
+        Company company = findById(id);
+        if (company != null) {
+            companies.remove(company);
+        }
+    }
 }
