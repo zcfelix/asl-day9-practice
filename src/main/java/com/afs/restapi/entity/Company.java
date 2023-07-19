@@ -1,4 +1,4 @@
-package com.afs.restapi;
+package com.afs.restapi.entity;
 
 import java.util.List;
 

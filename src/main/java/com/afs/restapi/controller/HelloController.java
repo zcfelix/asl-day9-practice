@@ -1,4 +1,4 @@
-package com.afs.restapi;
+package com.afs.restapi.controller;
 
 import org.springframework.web.bind.annotation.*;
 

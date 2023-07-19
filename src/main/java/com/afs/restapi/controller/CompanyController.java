@@ -1,5 +1,8 @@
-package com.afs.restapi;
+package com.afs.restapi.controller;
 
+import com.afs.restapi.entity.Company;
+import com.afs.restapi.service.CompanyService;
+import com.afs.restapi.entity.Employee;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

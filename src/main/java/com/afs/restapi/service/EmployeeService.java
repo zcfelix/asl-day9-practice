@@ -1,5 +1,7 @@
-package com.afs.restapi;
+package com.afs.restapi.service;
 
+import com.afs.restapi.entity.Employee;
+import com.afs.restapi.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

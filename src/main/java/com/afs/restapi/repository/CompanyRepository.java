@@ -1,5 +1,6 @@
-package com.afs.restapi;
+package com.afs.restapi.repository;
 
+import com.afs.restapi.entity.Company;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
