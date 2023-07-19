@@ -34,8 +34,8 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public void createEmployee(@RequestBody Employee employee) {
-        employeeRepository.insert(employee);
+    public Employee createEmployee(@RequestBody Employee employee) {
+        return employeeRepository.insert(employee);
     }
 
 }

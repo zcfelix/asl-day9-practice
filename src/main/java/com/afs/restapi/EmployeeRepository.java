@@ -26,9 +26,10 @@ public class EmployeeRepository {
                 .collect(Collectors.toList());
     }
 
-    public void insert(Employee employee) {
+    public Employee insert(Employee employee) {
         employee.setId(nextId());
         getEmployees().add(employee);
+        return employee;
     }
 
     private Long nextId() {
