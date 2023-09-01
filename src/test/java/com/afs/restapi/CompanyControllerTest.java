@@ -48,6 +48,7 @@ class CompanyControllerTest {
         Company companyUpdateRequest = new Company("xyz");
         ObjectMapper objectMapper = new ObjectMapper();
         String updatedEmployeeJson = objectMapper.writeValueAsString(companyUpdateRequest);
+
         mockMvc.perform(put("/companies/{id}", savedCompany.getId())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(updatedEmployeeJson))
